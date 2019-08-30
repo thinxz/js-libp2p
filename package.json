@@ -1,0 +1,19 @@
+{
+  "name": "js-libp2p",
+  "version": "1.0.0",
+  "description": "p2p case",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "thinxz",
+  "license": "ISC",
+  "dependencies": {
+    "@nodeutils/defaults-deep": "^1.1.0",
+    "libp2p": "^0.26.1",
+    "libp2p-mplex": "^0.8.5",
+    "libp2p-secio": "^0.11.1",
+    "libp2p-tcp": "^0.13.1"
+  }
+}
