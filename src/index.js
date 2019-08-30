@@ -1,6 +1,9 @@
 const multiaddr = require('multiaddr')
 const PeerInfo = require('peer-info')
 const {P2PNode} = require('./p2p')
+//
+const process = require('process')
+const PeerId = require('peer-id')
 
 function createPeer(callback) {
   // create a new PeerInfo object with a newly-generated PeerId
@@ -28,6 +31,27 @@ function createPeer(callback) {
   })
 }
 
+// PING
+function pingRemotePeer(localPeer) {
+  if (process.argv.length < 3) {
+    return console.log('no remote peer address given, skipping ping')
+  }
+  const remoteAddr = multiaddr(process.argv[2])
+
+  // Convert the multiaddress into a PeerInfo object
+  const peerId = PeerId.createFromB58String(remoteAddr.getPeerId())
+  const remotePeerInfo = new PeerInfo(peerId)
+  remotePeerInfo.multiaddrs.add(remoteAddr)
+
+  console.log('pinging remote peer at ', remoteAddr.toString())
+  localPeer.ping(remotePeerInfo, (err, time) => {
+    if (err) {
+      return console.error('error pinging: ', err)
+    }
+    console.log(`pinged ${remoteAddr.toString()} in ${time}ms`)
+  })
+}
+
 function handleStart(peer) {
   // get the list of addresses for our peer now that it's started.
   // there should be one address of the form
@@ -39,6 +63,9 @@ function handleStart(peer) {
   console.log('peer started. listening on addresses:')
 
   addresses.forEach(addr => console.log(addr.toString()))
+
+  //
+  pingRemotePeer(peer)
 }
 
 // main entry point, 主函数执行入口
